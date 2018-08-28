@@ -20,11 +20,8 @@ namespace RedScarf.Framework.UGUI
     {
         const int LAYER_KIND_INTERVAL=1000;                             //LayerKind各个值之间的间隔
         static Dictionary<UILayerKind, List<UIPanel>> s_LayerDict;
-        internal static int globalDepth;
-        internal static bool isDirty;
 
         [SerializeField]protected UILayerKind m_LayerKind = UILayerKind.General;
-        [SerializeField]protected bool useCustomSort;
         [SerializeField]protected int m_RelativeDepth;
         List<Canvas> canvasList;
         CanvasGroup m_CanvasGroup;
@@ -77,11 +74,6 @@ namespace RedScarf.Framework.UGUI
             return true;
         }
 
-        protected override void RefreshView()
-        {
-
-        }
-
         public UILayerKind LayerKind
         {
             get
@@ -98,8 +90,7 @@ namespace RedScarf.Framework.UGUI
                 s_LayerDict[value].Add(this);
 
                 m_LayerKind = value;
-
-                SetDirty();
+                UIStage.Instance.SetDirty();
             }
         }
 
@@ -127,7 +118,7 @@ namespace RedScarf.Framework.UGUI
             set
             {
                 m_RelativeDepth = value;
-                SetDirty();
+                UIStage.Instance.SetDirty();
             }
         }
 
@@ -135,10 +126,9 @@ namespace RedScarf.Framework.UGUI
         {
             if (m_Data != null)
             {
-                var data = m_Data.DeepClone<UIPanelData>();
+                var data = m_Data.DeepClone() as UIPanelData;
                 data.depth = RelativeDepth;
                 data.layerKind = LayerKind;
-                data.useCustomSort = useCustomSort;
                 return data;
             }
 
@@ -163,8 +153,8 @@ namespace RedScarf.Framework.UGUI
             });
             foreach (var canvas in canvasList)
             {
-                canvas.sortingOrder = globalDepth;
-                globalDepth++;
+                canvas.sortingOrder = UIStage.globalDepth;
+                UIStage.globalDepth++;
             }
         }
 
@@ -183,8 +173,7 @@ namespace RedScarf.Framework.UGUI
 
     public abstract class UIPanelData : UIElementData
     {
-        public UILayerKind layerKind;
-        public int depth;
-        public bool useCustomSort;
+        public UILayerKind layerKind;       //保存层级类型信息
+        public int depth;                   //保存depth信息，不要轻易修改
     }
 }

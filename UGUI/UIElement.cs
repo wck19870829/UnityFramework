@@ -16,7 +16,8 @@ namespace RedScarf.Framework.UGUI
         const string REFRESH_VIEW_FUNC = "RefreshViewDelay";
         static readonly Dictionary<Type, UIBindingAttribute> bindingDict;           //绑定信息
 
-        protected Animator m_Anim;
+        internal bool isOpen;
+        Animator m_Anim;
         UIElementData m_Data;
 
         static UIElement()
@@ -56,7 +57,7 @@ namespace RedScarf.Framework.UGUI
 
         protected virtual void OnEnable()
         {
-
+            isOpen = true;
         }
 
         protected virtual void Start()
@@ -66,7 +67,7 @@ namespace RedScarf.Framework.UGUI
 
         protected virtual void OnDisable()
         {
-            
+            isOpen = false;
         }
 
         protected virtual void OnDestroy()
@@ -77,11 +78,13 @@ namespace RedScarf.Framework.UGUI
 
         public void Open()
         {
+            isOpen = true;
             PlayAnim(OPEN_ANIM);
         }
 
         public void Close()
         {
+            isOpen = false;
             PlayAnim(CLOSE_ANIM);
         }
 
@@ -205,9 +208,7 @@ namespace RedScarf.Framework.UGUI
                 var bindingInfo = bindingDict[data.GetType()];
                 if (!string.IsNullOrEmpty(bindingInfo.prefabPath))
                 {
-                    //使用Resources.Load加载
-                    var source = Resources.Load<UIElement>(bindingInfo.prefabPath);
-                    source = data.GetUIElementSource();
+                    var source = data.GetUIPrefabSource();
                     var clone = GameObject.Instantiate<UIElement>(source);
                     if (parent != null) clone.transform.SetParent(parent);
                     clone.Data = data;
@@ -259,14 +260,9 @@ namespace RedScarf.Framework.UGUI
             this.id = id;
         }
 
-        public UIElementData DeepClone()
+        public virtual UIElementData DeepClone()
         {
-            return DeepClone<UIElementData>();
-        }
-
-        public virtual T DeepClone<T>() where T : UIElementData
-        {
-            return this.MemberwiseClone() as T;
+            return this.MemberwiseClone() as UIElementData;
         }
 
         /// <summary>
@@ -275,20 +271,11 @@ namespace RedScarf.Framework.UGUI
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public virtual T GetUIElementSource<T>()where T:UIElement
+        public virtual UIElement GetUIPrefabSource()
         {
             var bindInfo=UIElement.GetBindingInfo(this);
 
-            return Resources.Load<T>(bindInfo.prefabPath);
-        }
-
-        /// <summary>
-        /// 获取ui元素
-        /// </summary>
-        /// <returns></returns>
-        public UIElement GetUIElementSource()
-        {
-            return GetUIElementSource<UIElement>();
+            return Resources.Load<UIElement>(bindInfo.prefabPath);
         }
     }
 }

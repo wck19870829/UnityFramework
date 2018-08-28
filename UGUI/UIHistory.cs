@@ -28,7 +28,7 @@ namespace RedScarf.Framework.UGUI
             var activeList = new List<UIModuleData>(UIModule.GuidDict.Values.Count);
             foreach (var value in UIModule.GuidDict.Values)
             {
-                if (value.gameObject.activeInHierarchy)
+                if (value.isOpen)
                 {
                     var dataSnapshot = value.StateSnapshot() as UIModuleData;
                     if (dataSnapshot != null)
@@ -77,7 +77,10 @@ namespace RedScarf.Framework.UGUI
                     module = (UIModule)UIModule.GetInstanceElementByData(data,UIStage.Instance.transform);
                     module.Data = data;
                 }
+                module.LayerKind = data.layerKind;
+                module.RelativeDepth = data.depth;
             }
+            UIStage.Instance.SetDirty();
         }
 
         /// <summary>

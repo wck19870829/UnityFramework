@@ -48,11 +48,6 @@ namespace RedScarf.Framework.UGUI
             Unregister();
         }
 
-        protected override void RefreshView()
-        {
-
-        }
-
         protected override bool SetData(UIElementData value)
         {
             if (!base.SetData(value)) return false;
@@ -143,7 +138,7 @@ namespace RedScarf.Framework.UGUI
     }
 
     [UIBinding(typeof(UIModule))]
-    public class UIModuleData : UIPanelData
+    public abstract class UIModuleData : UIPanelData
     {
         public string guid;
 

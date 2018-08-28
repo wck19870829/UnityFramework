@@ -15,6 +15,8 @@ namespace RedScarf.Framework.UGUI
     /// </summary>
     public sealed class UIStage :Singleton<UIStage>
     {
+        internal static int globalDepth;
+        bool isDirty;
         Canvas m_MainCanvas;
 
         public static event Action OnSortLayerFinished;             //层级排序完成回调
@@ -34,11 +36,11 @@ namespace RedScarf.Framework.UGUI
 
         private void Update()
         {
-            if (UIPanel.isDirty)
+            if (isDirty)
             {
                 foreach (var item in UIPanel.LayerDict)
                 {
-                    UIPanel.globalDepth = (int)item.Key;
+                    globalDepth = (int)item.Key;
 
                     item.Value.Sort((a, b) => {
                         if (a.RelativeDepth == b.RelativeDepth) return 0;
@@ -50,7 +52,7 @@ namespace RedScarf.Framework.UGUI
                     }
                 }
 
-                UIPanel.isDirty = false;
+                isDirty = false;
 
                 if (OnSortLayerFinished != null)
                 {
@@ -77,6 +79,11 @@ namespace RedScarf.Framework.UGUI
 
                 return m_MainCanvas;
             }
+        }
+
+        public void SetDirty()
+        {
+            isDirty = true;
         }
     }
 }
