@@ -15,6 +15,9 @@ namespace RedScarf.Framework.UGUI
         static Canvas root;
 
         public Image progressImage;
+        public Camera targetCam;
+        public Transform target;
+        public Camera uiCam;
 
         protected Button topButton;
         protected PointerEventData cachePeData;
@@ -49,6 +52,11 @@ namespace RedScarf.Framework.UGUI
         protected virtual void Update()
         {
             HitCheck();
+        }
+
+        protected virtual void LateUpdate()
+        {
+            transform.rotation = Quaternion.identity;
         }
 
         protected void HitCheck()
@@ -110,6 +118,17 @@ namespace RedScarf.Framework.UGUI
             else
             {
                 cd = 0;
+            }
+
+            if (targetCam != null && target != null)
+            {
+                var screenPos=RectTransformUtility.WorldToScreenPoint(targetCam, target.position);
+                var worldPos = Vector3.zero;
+                if (uiCam != null)
+                {
+                    RectTransformUtility.ScreenPointToWorldPointInRectangle(transform as RectTransform, screenPos, uiCam, out worldPos);
+                }
+                transform.position = worldPos;
             }
         }
 
