@@ -16,9 +16,9 @@ namespace RedScarf.Framework.UGUI
         const string REFRESH_VIEW_FUNC = "RefreshViewDelay";
         static readonly Dictionary<Type, UIBindingAttribute> bindingDict;           //绑定信息
 
+        protected UIElementData m_Data;
         internal bool isOpen;
         Animator m_Anim;
-        UIElementData m_Data;
 
         static UIElement()
         {

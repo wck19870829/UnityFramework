@@ -27,11 +27,15 @@ namespace RedScarf.Framework.UGUI
         CanvasGroup m_CanvasGroup;
         GraphicRaycaster m_GraphicRaycaster;
         Canvas m_Canvas;
-        UIPanelData m_Data;
 
         static UIPanel()
         {
             s_LayerDict = new Dictionary<UILayerKind, List<UIPanel>>();
+        }
+
+        protected UIPanel()
+        {
+
         }
 
         protected override void Awake()

@@ -14,7 +14,7 @@ namespace RedScarf.Framework.UGUI
     {
         static Dictionary<string, UIModule> s_GuidDict;                            //guid映射
 
-        UIModuleData m_Data;
+        string m_GUID;
 
         static UIModule()
         {
@@ -87,13 +87,13 @@ namespace RedScarf.Framework.UGUI
         /// </summary>
         void Register()
         {
-            if (m_Data == null || string.IsNullOrEmpty(m_Data.guid)) return;
+            if (string.IsNullOrEmpty(GUID)) return;
 
-            if (s_GuidDict.ContainsKey(m_Data.guid))
+            if (s_GuidDict.ContainsKey(GUID))
             {
-                s_GuidDict.Remove(m_Data.guid);
+                s_GuidDict.Remove(GUID);
             }
-            s_GuidDict.Add(m_Data.guid, this);
+            s_GuidDict.Add(GUID, this);
         }
 
         /// <summary>
@@ -101,11 +101,36 @@ namespace RedScarf.Framework.UGUI
         /// </summary>
         void Unregister()
         {
-            if (m_Data == null || string.IsNullOrEmpty(m_Data.guid)) return;
+            if (string.IsNullOrEmpty(GUID)) return;
 
-            if (s_GuidDict.ContainsKey(m_Data.guid))
+            if (s_GuidDict.ContainsKey(GUID))
             {
-                s_GuidDict.Remove(m_Data.guid);
+                s_GuidDict.Remove(GUID);
+            }
+        }
+
+        /// <summary>
+        /// GUID
+        /// </summary>
+        public string GUID
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_GUID))
+                {
+                    m_GUID = System.Guid.NewGuid().ToString();
+                }
+                return m_GUID;
+            }
+            internal set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    Debug.LogErrorFormat("GUID不能为null!  {0}",value);
+                    return;
+                }
+
+                m_GUID = value;
             }
         }
 
