@@ -110,5 +110,36 @@ namespace RedScarf.Framework
         }
 
         #endregion
+
+        #region 动画
+
+        /// <summary>
+        /// 获取动画时长
+        /// </summary>
+        /// <param name="animator"></param>
+        /// <param name="clip"></param>
+        /// <returns></returns>
+        public static float GetClipLength(Animator animator,string clip)
+        {
+            if (animator==null || string.IsNullOrEmpty(clip) || animator.runtimeAnimatorController==null)
+                return 0;
+
+            RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+            AnimationClip[] tAnimationClips = ac.animationClips;
+            if (tAnimationClips==null || tAnimationClips.Length <= 0) return 0;
+
+            AnimationClip tAnimationClip;
+            for (int tCounter = 0; tCounter < tAnimationClips.Length; tCounter++)
+            {
+                tAnimationClip = ac.animationClips[tCounter];
+                if (tAnimationClip!=null && tAnimationClip.name == clip)
+                {
+                    return tAnimationClip.length;
+                }
+            }
+            return 0;
+        }
+
+        #endregion
     }
 }
