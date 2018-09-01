@@ -85,6 +85,9 @@ namespace RedScarf.Framework
         /// </summary>
         static void BeginDrawOnRenderTexture()
         {
+            GL.PushMatrix();
+            GL.LoadPixelMatrix(0,TEMP_RENDER_TEXTURE_MAX_SIZE, TEMP_RENDER_TEXTURE_MAX_SIZE,0);
+
             cacheRT = RenderTexture.active;
             tempRT = RenderTexture.GetTemporary(TEMP_RENDER_TEXTURE_MAX_SIZE, TEMP_RENDER_TEXTURE_MAX_SIZE);
             RenderTexture.active = tempRT;
@@ -98,6 +101,7 @@ namespace RedScarf.Framework
         {
             RenderTexture.ReleaseTemporary(tempRT);
             RenderTexture.active = cacheRT;
+            GL.PopMatrix();
         }
 
         /// <summary>
@@ -174,11 +178,11 @@ namespace RedScarf.Framework
 
                         //绘制源图片到RenderTexture
                         var screenRect = new Rect(0,0,width,height);
-                        Graphics.DrawTexture(screenRect, source);
+                        Graphics.DrawTexture(overlapRect, source);
 
                         //读取像素
                         var tex = new Texture2D(width, height, TextureFormat.ARGB32, false);
-                        tex.ReadPixels(screenRect, 0, 0);
+                        tex.ReadPixels(overlapRect, 0, 0);
                         tex.Apply();
 
                         EndDrawOnRenderTexture();
