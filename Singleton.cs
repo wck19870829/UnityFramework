@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RedScarf.Framework
 {
     /// <summary>
-    /// 单例模版
+    /// MonoBehaviour单例模版
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Singleton<T>: MonoBehaviour

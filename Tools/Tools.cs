@@ -60,16 +60,18 @@ namespace RedScarf.Framework
         /// <returns></returns>
         public static Rect GetRectOverlap(Rect rect,Rect rect2)
         {
+            var overlap = Rect.zero;
             if (rect.Overlaps(rect2, true))
             {
-                return Rect.MinMaxRect( Mathf.Max(rect.xMin,rect2.xMin),
-                                        Mathf.Max(rect.yMin, rect2.yMin),
-                                        Mathf.Min(rect.xMax, rect2.xMax),
-                                        Mathf.Min(rect.yMax, rect2.yMax)
-                                        );
+                overlap=Rect.MinMaxRect(
+                        Mathf.Max(rect.xMin,rect2.xMin),
+                        Mathf.Max(rect.yMin, rect2.yMin),
+                        Mathf.Min(rect.xMax, rect2.xMax),
+                        Mathf.Min(rect.yMax, rect2.yMax)
+                        );
             }
 
-            return Rect.zero;
+            return overlap;
         }
 
         #endregion
