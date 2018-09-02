@@ -16,7 +16,7 @@ namespace RedScarf.Framework
         {
             var t2d = new Texture2D(source.texture.width, source.texture.height,TextureFormat.ARGB32,false);
             Graphics.ConvertTexture(source.texture, t2d);
-            image.texture = Tools.CopyTextureFromRenderTexture(sourceTex, rect);
+            image.texture = Tools.CopyTexture(sourceTex, rect);
         }
     }
 }

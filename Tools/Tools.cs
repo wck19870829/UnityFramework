@@ -178,11 +178,17 @@ namespace RedScarf.Framework
 
                         //绘制源图片到RenderTexture
                         var screenRect = new Rect(0,0,width,height);
-                        Graphics.DrawTexture(overlapRect, source);
+                        var drawSourceRect = new Rect(
+                                            overlapRect.x/ sourceRect.width,
+                                            1-(overlapRect.y+ overlapRect.height)/sourceRect.height,
+                                            overlapRect.width/ sourceRect.width,
+                                            overlapRect.height/ sourceRect.height
+                                            );
+                        Graphics.DrawTexture(screenRect, source, drawSourceRect, 0,0,0,0);
 
                         //读取像素
                         var tex = new Texture2D(width, height, TextureFormat.ARGB32, false);
-                        tex.ReadPixels(overlapRect, 0, 0);
+                        tex.ReadPixels(screenRect, 0, 0);
                         tex.Apply();
 
                         EndDrawOnRenderTexture();
@@ -207,6 +213,7 @@ namespace RedScarf.Framework
             if (source != null)
             {
                 var sourceRect = new Rect(0, 0, source.width, source.height);
+                rect = new Rect(rect.x,sourceRect.height-rect.y-rect.height,rect.width,rect.height);
                 var overlapRect = GetRectOverlap(sourceRect, rect);
                 if (overlapRect != Rect.zero)
                 {
