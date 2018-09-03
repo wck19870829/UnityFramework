@@ -117,7 +117,8 @@ namespace RedScarf.Framework
             if(!Graphics.ConvertTexture(source, t2d))
             {
                 //转换失败尝试其他方法,DX9与Mac+OpenGL不支持
-                throw new Exception("转换失败！暂未实现方法");
+                var rect = new Rect(0, 0, source.width, source.height);
+                t2d =CopyTextureFromRenderTexture(source,rect);
             }
 
             return t2d;
@@ -158,7 +159,7 @@ namespace RedScarf.Framework
         /// <param name="source"></param>
         /// <param name="rect"></param>
         /// <returns></returns>
-        public static Texture2D CopyTextureFromRenderTexture(Texture2D source, Rect rect)
+        public static Texture2D CopyTextureFromRenderTexture(Texture source, Rect rect)
         {
             if (rect.width > TEMP_RENDER_TEXTURE_MAX_SIZE || rect.height > TEMP_RENDER_TEXTURE_MAX_SIZE)
             {
