@@ -69,7 +69,7 @@ namespace RedScarf.Framework.Net.HttpServer
                 m_HttpListener.Prefixes.Add(p);
             }
             m_LocalIP = NetTools.GetLocalIP();
-
+            m_HttpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
             m_FileRootPath = fileRootPath;
             if (!Directory.Exists(fileRootPath))
             {
@@ -221,8 +221,6 @@ namespace RedScarf.Framework.Net.HttpServer
         /// <returns></returns>
         bool CheckerFile(HttpListenerContext context)
         {
-            Debug.Log("xxx");
-
             if (!string.IsNullOrEmpty(context.Request.RawUrl))
             {
                 var filePath = SimpleHttpServer.Instance.FileRootPath + context.Request.RawUrl;
