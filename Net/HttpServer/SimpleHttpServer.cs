@@ -13,11 +13,10 @@ namespace RedScarf.Framework.Net.HttpServer
     /// </summary>
     public sealed class SimpleHttpServer : Singleton<SimpleHttpServer>
     {
-        const string DEFAULT_FILE_ROOT_PATH = "D:/SimpleHttpServer";
-        const string DEFAULT_IP = "http://localhost:8848/";
+        static readonly int defaultPort = 8848;
+        static readonly string defaultFileRootPath = "D:/SimpleHttpServer";
 
-        [SerializeField] string m_IP;                                   //监听IP
-        [SerializeField] string m_FileRootPath;                         //文件根路径
+        [SerializeField] string m_FileRootPath;                               //文件根路径
         HttpListener m_HttpListener;
         string m_LocalIP;
         List<Func<HttpListenerContext, bool>> m_GetMessageChecker;
@@ -42,16 +41,20 @@ namespace RedScarf.Framework.Net.HttpServer
             {
                 CheckerFile
             };
-            Init(checker, DEFAULT_FILE_ROOT_PATH, DEFAULT_IP);
+            var prefixes = new string[]
+            {
+                "http://+:"+defaultPort+"/"
+            };
+            Init(checker, defaultFileRootPath, prefixes);
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="getMessageChecker">获取信息检测序列,用于按顺序检测</param>
-        /// <param name="ip">监听ip地址</param>
+        /// <param name="prefixes">监听ip地址列表</param>
         /// <param name="rootPath">根文件夹</param>
-        public void Init(List<Func<HttpListenerContext, bool>> getMessageChecker, string fileRootPath, string ip)
+        public void Init(List<Func<HttpListenerContext, bool>> getMessageChecker, string fileRootPath, string[] prefixes)
         {
             if (getMessageChecker == null || getMessageChecker.Count == 0)
             {
@@ -60,9 +63,11 @@ namespace RedScarf.Framework.Net.HttpServer
             }
 
             m_GetMessageChecker = getMessageChecker;
-            m_IP = ip;
             m_HttpListener.Prefixes.Clear();
-            m_HttpListener.Prefixes.Add(ip);
+            foreach (var p in prefixes)
+            {
+                m_HttpListener.Prefixes.Add(p);
+            }
             m_LocalIP = NetTools.GetLocalIP();
 
             m_FileRootPath = fileRootPath;
@@ -80,11 +85,6 @@ namespace RedScarf.Framework.Net.HttpServer
 
             Debug.LogFormat("HttpServer初始化.");
         }
-
-        /// <summary>
-        /// 监听的地址
-        /// </summary>
-        public string IP { get { return m_IP; }}
 
         /// <summary>
         /// 根文件路径
@@ -221,6 +221,8 @@ namespace RedScarf.Framework.Net.HttpServer
         /// <returns></returns>
         bool CheckerFile(HttpListenerContext context)
         {
+            Debug.Log("xxx");
+
             if (!string.IsNullOrEmpty(context.Request.RawUrl))
             {
                 var filePath = SimpleHttpServer.Instance.FileRootPath + context.Request.RawUrl;
