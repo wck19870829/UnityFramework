@@ -22,7 +22,9 @@ namespace RedScarf.Framework.UGUI
         static Dictionary<UILayerKind, List<UIPanel>> s_LayerDict;
 
         [SerializeField]protected UILayerKind m_LayerKind = UILayerKind.General;
-        [SerializeField]protected int m_RelativeDepth;
+        [SerializeField]protected int m_Depth;
+        [SerializeField]protected bool autoSortDepth=true;
+        internal int cacheDepth;
         List<Canvas> canvasList;
         CanvasGroup m_CanvasGroup;
         GraphicRaycaster m_GraphicRaycaster;
@@ -55,6 +57,7 @@ namespace RedScarf.Framework.UGUI
             base.OnEnable();
 
             LayerKind = m_LayerKind;
+            cacheDepth=GetMaxAutoDepth(m_LayerKind)+1;
         }
 
         protected override void OnDisable()
@@ -73,9 +76,26 @@ namespace RedScarf.Framework.UGUI
                 return false;
             }
 
-            m_Data = value as UIPanelData;
-
             return true;
+        }
+        
+        /// <summary>
+        /// 获取层类型中最高层
+        /// </summary>
+        /// <param name="layerKind"></param>
+        /// <returns></returns>
+        public static int GetMaxAutoDepth(UILayerKind layerKind)
+        {
+            var depth = 0;
+            foreach(var panel in s_LayerDict[layerKind])
+            {
+                if (panel.autoSortDepth)
+                {
+                    depth = Mathf.Max(panel.cacheDepth,depth);
+                }
+            }
+
+            return depth;
         }
 
         public UILayerKind LayerKind
@@ -113,15 +133,17 @@ namespace RedScarf.Framework.UGUI
         /// <summary>
         /// 此LayerKind中的深度
         /// </summary>
-        public int RelativeDepth
+        public int Depth
         {
             get
             {
-                return m_RelativeDepth;
+                return m_Depth;
             }
             set
             {
-                m_RelativeDepth = value;
+                m_Depth = value;
+                autoSortDepth = false;
+                cacheDepth = m_Depth;
                 UIStage.Instance.SetDirty();
             }
         }
@@ -131,8 +153,11 @@ namespace RedScarf.Framework.UGUI
             if (m_Data != null)
             {
                 var data = m_Data.DeepClone() as UIPanelData;
-                data.depth = RelativeDepth;
+                data.depth = m_Depth;
+                data.cacheDepth = cacheDepth;
                 data.layerKind = LayerKind;
+                data.autoSortDepth = autoSortDepth;
+
                 return data;
             }
 
@@ -177,7 +202,9 @@ namespace RedScarf.Framework.UGUI
 
     public abstract class UIPanelData : UIElementData
     {
-        public UILayerKind layerKind;       //保存层级类型信息
-        public int depth;                   //保存depth信息，不要轻易修改
+        public UILayerKind layerKind;       //层级类型信息
+        public int depth;                   //
+        public bool autoSortDepth;
+        public int cacheDepth;              //缓存深度信息
     }
 }

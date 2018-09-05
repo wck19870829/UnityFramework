@@ -43,8 +43,9 @@ namespace RedScarf.Framework.UGUI
                     globalDepth = (int)item.Key;
 
                     item.Value.Sort((a, b) => {
-                        if (a.RelativeDepth == b.RelativeDepth) return 0;
-                        return a.RelativeDepth > b.RelativeDepth ? 1 : -1;
+                        if (a.cacheDepth == b.cacheDepth) return 0;
+
+                        return a.cacheDepth > b.cacheDepth ? 1 : -1;
                     });
                     foreach (var layer in item.Value)
                     {

@@ -78,7 +78,7 @@ namespace RedScarf.Framework.UGUI
                     module.Data = data;
                 }
                 module.LayerKind = data.layerKind;
-                module.RelativeDepth = data.depth;
+                module.cacheDepth = data.cacheDepth;
             }
             UIStage.Instance.SetDirty();
         }

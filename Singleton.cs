@@ -20,22 +20,25 @@ namespace RedScarf.Framework
             {
                 lock (syncRoot)
                 {
-                    if (s_Instance == null)
+                    if (Application.isPlaying)
                     {
-                        var instances = FindObjectsOfType<T>();
-                        if (instances.Length > 0)
-                        {
-                            s_Instance = instances[0];
-                            for (var i = 1; i < instances.Length; i++)
-                            {
-                                Destroy(instances[i].gameObject);
-                            }
-                        }
                         if (s_Instance == null)
                         {
-                            var go = new GameObject("[" + typeof(T).Name + "]");
-                            s_Instance = go.AddComponent<T>();
-                            DontDestroyOnLoad(go);
+                            var instances = FindObjectsOfType<T>();
+                            if (instances.Length > 0)
+                            {
+                                s_Instance = instances[0];
+                                for (var i = 1; i < instances.Length; i++)
+                                {
+                                    Destroy(instances[i]);
+                                }
+                            }
+                            if (s_Instance == null)
+                            {
+                                var go = new GameObject("[" + typeof(T).Name + "]");
+                                s_Instance = go.AddComponent<T>();
+                                DontDestroyOnLoad(go);
+                            }
                         }
                     }
 
