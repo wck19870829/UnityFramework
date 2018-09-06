@@ -13,12 +13,11 @@ namespace RedScarf.Framework.Net.HttpServer
     /// </summary>
     public sealed class SimpleHttpServer : Singleton<SimpleHttpServer>
     {
-        static readonly int defaultPort = 8848;
-        static readonly string defaultFileRootPath = "D:/SimpleHttpServer";
+        public static readonly int defaultPort = 8848;
+        public static readonly string defaultFileRootPath = "D:/SimpleHttpServer";
 
         [SerializeField] string m_FileRootPath;                               //文件根路径
         HttpListener m_HttpListener;
-        string m_LocalIP;
         List<Func<HttpListenerContext, bool>> m_GetMessageChecker;
 
         public SimpleHttpServer()
@@ -68,7 +67,6 @@ namespace RedScarf.Framework.Net.HttpServer
             {
                 m_HttpListener.Prefixes.Add(p);
             }
-            m_LocalIP = NetTools.GetLocalIP();
             m_HttpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
             m_FileRootPath = fileRootPath;
             if (!Directory.Exists(fileRootPath))
@@ -90,11 +88,6 @@ namespace RedScarf.Framework.Net.HttpServer
         /// 根文件路径
         /// </summary>
         public string FileRootPath { get { return m_FileRootPath; }}
-
-        /// <summary>
-        /// 本机地址
-        /// </summary>
-        public string LocalIP { get { return m_LocalIP; } }
 
         /// <summary>
         /// 开始服务器
